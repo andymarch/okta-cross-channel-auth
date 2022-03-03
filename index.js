@@ -46,19 +46,19 @@ app.use(oidc.router);
 const router = express.Router();
 
 router.get("/", async function(req,res) {
-    res.render("index");
+    res.render("index", {name: process.env.DEMO_NAME, image:process.env.DEMO_IMAGE, logo:process.env.DEMO_LOGO});
 })
 
 router.get("/verification", oidc.ensureAuthenticated(), async function(req,res) {
     var cacheid = Math.floor(100000000 + Math.random() * 900000000);
     cache.put(cacheid,req.userContext.tokens.access_token)
-    res.render("complete",{verificationLink:process.env.BASE_URI+'/verify?id='+cacheid, cacheid: cacheid, oktaorg: process.env.OKTA_ORG});
+    res.render("complete",{name: process.env.DEMO_NAME, image:process.env.DEMO_IMAGE, logo:process.env.DEMO_LOGO, verificationLink:process.env.BASE_URI+'/verify?id='+cacheid, cacheid: cacheid, oktaorg: process.env.OKTA_ORG});
 })
 
 router.get("/verify", oidc.ensureAuthenticated(), async function(req,res) {
     var token = cache.get(req.query.id)
     //handle cache misses
-    res.render("verify",{token: token, nocode: (token == null)});
+    res.render("verify",{name: process.env.DEMO_NAME, image:process.env.DEMO_IMAGE, logo:process.env.DEMO_LOGO, token: token, nocode: (token == null)});
 })
 
 app.use(router)
