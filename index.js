@@ -18,7 +18,7 @@ var hbs = exphbs.create({
                 var base64 = base64Url.replace('-', '+').replace('_', '/');
                 return JSON.stringify(JSON.parse(atob(base64)), undefined, '\t');
             } else {
-                return "Invalid or empty token was parsed"
+                return 'error'
             }
         }
     }
@@ -50,15 +50,15 @@ router.get("/", async function(req,res) {
 })
 
 router.get("/verification", oidc.ensureAuthenticated(), async function(req,res) {
-    var cacheid = uuidv4()
+    var cacheid = Math.floor(100000000 + Math.random() * 900000000);
     cache.put(cacheid,req.userContext.tokens.access_token)
-    res.render("complete",{verificationLink:process.env.BASE_URI+'/verify?id='+cacheid});
+    res.render("complete",{verificationLink:process.env.BASE_URI+'/verify?id='+cacheid, cacheid: cacheid, oktaorg: process.env.OKTA_ORG});
 })
 
 router.get("/verify", oidc.ensureAuthenticated(), async function(req,res) {
     var token = cache.get(req.query.id)
     //handle cache misses
-    res.render("verify",{token: token});
+    res.render("verify",{token: token, nocode: (token == null)});
 })
 
 app.use(router)

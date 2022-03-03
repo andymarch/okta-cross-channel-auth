@@ -1,6 +1,96 @@
-<div class="content">
-    <div class="section">
-        <p>Retrieved the following authentication token for the user</p>
-        <pre>{{jwt token}}</pre>
+	<h1>Atko inc.</h1>
+	<h2>Cross channel Authentication</h2>
+		<div id="cnt_code" style="display:none">
+	        <p class="mayor">The identity is valid, we have retrieved this information for you:</p>
+	        <p>This is the raw JWT that was retrieved with the code.</p>
+	        <p>
+				<div class="table-wrapper" style="font-size: 80%">
+													<table>
+														<thead>
+															<tr>
+																<th>Data</th>
+																<th>Value</th>
+															</tr>
+														</thead>
+														<tbody id="cnt_claims">
+
+														</tbody>
+													</table>
+												</div>        	
+
+	        	</table>
+	        </p>
+	        <h2>JWT</h2>
+	        <p>This is the JWT that was retrieved from the code</p>
+	        <p><pre>{{jwt token}}</pre></p>
+	    </div>
+	    <div id="cnt_nocode" style="display:none">
+	    	<p>There is no code provided in the url, please enter the code here</p>
+	    	<p><center><input type="text" name="name" id="inp_verify_code" value="" style="font-size: 60px; height: 80px; width: 290px; text-align: center" maxlength="9"></center></p>
+	    	<p><a href="#"><input class="js-copy-jwt-btn" type="button" name="submit" id="btn_verify_code" value="Verify"></a></p>
+	    	<script>
+	    		$("#btn_verify_code").click(function(){
+	    			window.location = '/verify?id='+ $("#inp_verify_code").val();
+	    		})
+	    	</script>
+	    </div>
     </div>
-</div>
+    <script>
+    	if ({{{nocode}}} === false) {
+	    	var jwt = {{{jwt token}}};
+	    	var label = '';
+	    	var value = '';
+	    	var display = true
+	    	var hiddenClaims = ["ver","jti","aud","cid","scp"]
+	    	console.log(jwt);
+    		$("#cnt_code").show();
+    	} else {
+    		$("#cnt_nocode").show();
+    	}
+for (var key in jwt) {
+    if (jwt.hasOwnProperty(key)) {
+        console.log(key + " -> " + jwt[key]);
+		switch(key) {
+		  case 'iat':
+		    	date = new Date(jwt[key] * 1000);
+		    	label = 'code&nbsp;issued';
+		    	value = date.toLocaleString("nl-NL")
+		    	display = true
+		    break;
+		  case 'exp':
+		  		date = new Date(jwt[key] * 1000);
+		    	label = 'code&nbsp;expires';
+		    	value = date.toLocaleString("nl-NL")
+		    	display = true
+		    break;
+		  case 'uid':
+		    	label = 'user&nbsp;identifier';
+		    	value = jwt[key]
+		    	display = true
+		    break;
+		  case 'iss':
+		    	label = 'source';
+		    	value = jwt[key]
+		    	display = true
+		    break;
+		  case 'sub':
+		    	label = 'user';
+		    	value = jwt[key]
+		    	display = true
+		    break;
+		  default:
+		  	if(hiddenClaims.includes(key) === false) {
+		    	label = key.replace('_', '&nbsp;');
+		    	value = jwt[key];
+		    	display = true
+		    } else {
+		    	display = false
+		    }
+		}   
+		if (display === true) {
+	        $("#cnt_claims").append('<tr><td><strong>'+ label +'</strong></td><td>'+ value +'</td></tr>');
+		}     
+    }
+}
+
+    </script>

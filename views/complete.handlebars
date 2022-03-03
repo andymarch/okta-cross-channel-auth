@@ -1,6 +1,61 @@
-<div class="content">
-    <div class="section">
-        <p>Thank you for completing authentication, please send the following link to the service representative on {{channel}}</p>
-        <p><a href="{{verificationLink}}">{{verificationLink}}</a></p>
+	<h1>Atko inc.</h1>
+	<h2>Cross channel Authentication</h2>
+
+        <p class="mayor">Thank you for completing authentication, you reference is:</p>
+        <h1 id="code">{{cacheid}}</h1>
+        <p>Please provide this code via phone or copy the verification link below and paste it to your support agent.</p>
+
+        <a href="#"><input class="js-copy-jwt-btn button primary icon solid" type="button" name="submit" id="submit" value="Copy link to clipboard"></a> <a href="{{oktaorg}}/login/signout/"><input class="" type="button" name="logout" id="logout" value="Logout"></a>
+        <p>{{verificationLink}}</p>
     </div>
-</div>
+<script type="text/javascript">
+	var code = '{{cacheid}}';
+	String(code);
+	console.log(code);
+	var code1 = code.substring(0, 3);
+	var code2 = code.substring(3, 6);
+	var code3 = code.substring(6, 9);
+	document.getElementById("code").innerHTML = code1 + ' '+ code2 + ' '+ code3;
+</script>
+<script>
+function fallbackCopyTextToClipboard(text) {
+  var textArea = document.createElement("textarea");
+  textArea.value = text;
+  
+  // Avoid scrolling to bottom
+  textArea.style.top = "0";
+  textArea.style.left = "0";
+  textArea.style.position = "fixed";
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Fallback: Copying text command was ' + msg);
+  } catch (err) {
+    console.error('Fallback: Oops, unable to copy', err);
+  }
+
+  document.body.removeChild(textArea);
+}
+function copyTextToClipboard(text) {
+  if (!navigator.clipboard) {
+    fallbackCopyTextToClipboard(text);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(function() {
+    console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    console.error('Async: Could not copy text: ', err);
+  });
+}
+
+var copyJwtBtn = document.querySelector('.js-copy-jwt-btn');
+var Jwt = '{{{verificationLink}}}';
+copyJwtBtn.addEventListener('click', function(event) {
+  copyTextToClipboard(Jwt);
+});
+</script>
