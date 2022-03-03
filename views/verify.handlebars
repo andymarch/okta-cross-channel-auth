@@ -1,4 +1,4 @@
-	<h1>Atko inc.</h1>
+	<h1>{{name}}</h1>
 	<h2>Cross channel Authentication</h2>
 		<div id="cnt_code" style="display:none">
 	        <p class="mayor">The identity is valid, we have retrieved this information for you:</p>
@@ -25,7 +25,7 @@
 	        <p><pre>{{jwt token}}</pre></p>
 	    </div>
 	    <div id="cnt_nocode" style="display:none">
-	    	<p>There is no code provided in the url, please enter the code here</p>
+	    	<p>There is no <strong>valid</strong> {{name}} code provided in the url, please enter the valid code here</p>
 	    	<p><center><input type="text" name="name" id="inp_verify_code" value="" style="font-size: 60px; height: 80px; width: 290px; text-align: center" maxlength="9"></center></p>
 	    	<p><a href="#"><input class="js-copy-jwt-btn" type="button" name="submit" id="btn_verify_code" value="Verify"></a></p>
 	    	<script>
